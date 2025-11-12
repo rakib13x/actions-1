@@ -15,19 +15,35 @@ jobs:
       - name: Execute cowsay CMD
         run: cowsay -f dragon "Run for cover, dragon. Fire......." >> dragon.txt
 
-      - name: Sleep for 30 seconds
-        run: sleep 30
+      - name: Upload Dragon text file
+        uses: actions/upload-artifact@v3
+        with:
+            name: deagon-text-file
+            path: dragon.txt
+            
     test_job:
+      needs: build_job
       runs-on: ubuntu-latest
       steps:
-      - name: sleep for 10 seconds
-        run: sleep 10
-      
+      - name: Download Dragon text file
+        uses: actions/download-artifact@v3
+        with:
+            name: deagon-text-file
+            path: dragon.txt
+
       - name: Test File Exists
         run: grep -i "dragon" dragon.txt
+
     deploy_job:
+      needs: test_job
       runs-on: ubuntu-latest
       steps:
+      - name: Download Dragon text file
+        uses: actions/download-artifact@v3
+        with:
+            name: deagon-text-file
+            path: dragon.txt
+
       - name: Read File
         run: cat dragon.txt
       
