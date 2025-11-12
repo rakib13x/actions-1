@@ -18,9 +18,7 @@ jobs:
       # - name: Read files
       #   run: cat README.md
 
-
       #Or
-
       - name: List all actions
         run: | 
           echo "My First Github Actions Job"
