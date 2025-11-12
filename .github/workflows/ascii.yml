@@ -13,7 +13,7 @@ jobs:
         run: sudo apt-get install cowsay -y
 
       - name: Execute cowsay CMD
-        run: cowsay -f dragon "Run for cover, dragon. Fire......." >> dragon.txt
+        run: cowsay -f dragon "Run for cover, dragon. Fire......." > dragon.txt
 
       - name: Upload Dragon text file
         uses: actions/upload-artifact@v4
@@ -30,8 +30,11 @@ jobs:
         with:
           name: dragon-text-file
 
+      - name: List files after download
+        run: ls -l
+
       - name: Test File Exists
-        run: grep -i "dragon" dragon-text-file/dragon.txt
+        run: grep -i "dragon" dragon.txt
 
   deploy_job:
     needs: test_job
@@ -42,8 +45,11 @@ jobs:
         with:
           name: dragon-text-file
 
+      - name: List files after download
+        run: ls -l
+
       - name: Read File
-        run: cat dragon-text-file/dragon.txt
+        run: cat dragon.txt
 
       - name: Deploy
         run: echo Deploying.....
