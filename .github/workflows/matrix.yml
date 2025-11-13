@@ -32,6 +32,12 @@ jobs:
       - name: Pull Docker image ${{ matrix.images }}
         run: docker pull ${{ matrix.images }}
 
-      - name: Run Docker image ${{ matrix.images }} on ${{ matrix.os }}
-        run: |
-          timeout 60s docker run ${{ matrix.images }} || echo "docker run timed out"
+      - name: Run Docker image on Linux with timeout
+        if: runner.os != 'Windows'
+        run: timeout 60s docker run ${{ matrix.images }} || echo "docker run timed out"
+        shell: bash
+
+      - name: Run Docker image on Windows without timeout
+        if: runner.os == 'Windows'
+        run: docker run ${{ matrix.images }}
+        shell: powershell
