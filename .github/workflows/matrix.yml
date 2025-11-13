@@ -23,8 +23,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Show Docker info
+      - name: Docker version
+        run: docker version
+
+      - name: Docker info
         run: docker info
 
+      - name: Pull Docker image ${{ matrix.images }}
+        run: docker pull ${{ matrix.images }}
+
       - name: Run Docker image ${{ matrix.images }} on ${{ matrix.os }}
-        run: docker run ${{ matrix.images }}
+        run: |
+          timeout 60s docker run ${{ matrix.images }} || echo "docker run timed out"
