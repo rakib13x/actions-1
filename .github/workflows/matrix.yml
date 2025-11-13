@@ -1,5 +1,4 @@
 name: Matrix Workflow Example
-
 on:
   push:
   workflow_dispatch:
@@ -22,21 +21,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      
+      - name: Fix Docker on ubuntu-20.04
+        if: matrix.os == 'ubuntu-20.04'
+        run: |
+          sudo systemctl restart docker
+          sleep 5
+      
       - name: Docker version
         run: docker version
-
+      
       - name: Docker info
         run: docker info
-
+      
       - name: Pull Docker image ${{ matrix.images }}
         run: docker pull ${{ matrix.images }}
-
+      
       - name: Run Docker image on Linux with timeout
         if: runner.os != 'Windows'
-        run: timeout 60s docker run ${{ matrix.images }} || echo "docker run timed out"
+        run: timeout 60s docker run ${{ matrix.images }} || echo "Docker run completed or timed out"
         shell: bash
-
+      
       - name: Run Docker image on Windows without timeout
         if: runner.os == 'Windows'
         run: docker run ${{ matrix.images }}
